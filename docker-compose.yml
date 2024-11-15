@@ -1,0 +1,14 @@
+services:
+  api:
+    build:
+      .
+    ports:
+      - "5000:5000"
+    develop:
+      watch:
+        - path: ./requirements.txt
+          target: /app
+          action: rebuild
+        - path: .
+          target: /app
+          action: sync
