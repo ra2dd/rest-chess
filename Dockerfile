@@ -8,7 +8,7 @@ COPY requirements.txt /app
 
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY ./solver .
 
 EXPOSE 5000
 

@@ -9,6 +9,6 @@ services:
         - path: ./requirements.txt
           target: /app
           action: rebuild
-        - path: .
+        - path: ./solver
           target: /app
           action: sync
