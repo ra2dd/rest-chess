@@ -1,4 +1,4 @@
-from solver.models import Pawn, Knight
+from solver.models import Figure, Pawn, Knight, Bishop
 
 
 def test_initialization():
@@ -40,3 +40,20 @@ def test_knight_validate_move():
     knight = Knight("D4")
     assert knight.validate_move("C6") is True
     assert knight.validate_move("D6") is False
+
+
+def test_bishop_list_available_moves():
+    bishop = Bishop("C3")
+    expected_moves = {"A1", "B2", "D4", "E5", "F6", "G7", "H8", "B4", "A5", "D2", "E1"}
+    assert bishop.list_available_moves() == expected_moves
+
+    bishop = Bishop("F5")
+    expected_moves = {"E6", "D7", "C8", "G6", "H7", "G4", "H3", "E4", "D3", "C2", "B1"}
+    assert bishop.list_available_moves() == expected_moves
+
+
+def test_col_rows_are_in_the_board():
+    assert Figure._indexes_in_board(0, 0) is True
+    assert Figure._indexes_in_board(7, 7) is True
+    assert Figure._indexes_in_board(8, 8) is False
+    assert Figure._indexes_in_board(-1, -1) is False

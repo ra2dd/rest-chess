@@ -21,6 +21,15 @@ class Figure(ABC):
         else:
             return False
 
+    @staticmethod
+    def _indexes_in_board(col_index, row_index):
+        if col_index >= 8 or col_index < 0:
+            return False
+        elif row_index >= 8 or row_index < 0:
+            return False
+        else:
+            return True
+
 
 class Pawn(Figure):
     def list_available_moves(self) -> list:
@@ -49,12 +58,36 @@ class Knight(Figure):
                 else:
                     row_index += jump_dir[direction]
 
-                # Check if after a move a figure is out of board
-                if col_index >= len(cols) or col_index < 0:
-                    continue
-                if row_index >= len(rows) or row_index < 0:
+                # Check if after a move a figure is in the board
+                if self._indexes_in_board(col_index, row_index) is False:
                     continue
 
                 # Append move to set
                 moves.add(f"{cols[col_index]}{rows[row_index]}")
+        return moves
+
+
+class Bishop(Figure):
+    def list_available_moves(self) -> set:
+        moves = set()
+        jump_col = [1, 1, -1, -1]
+        jump_row = [1, -1, 1, -1]
+
+        for turn in range(4):
+            col_index = cols.index(self.col)
+            row_index = rows.index(self.row)
+            limit = 0
+            while limit < 9:
+                # Move a step
+                col_index += jump_col[turn]
+                row_index += jump_row[turn]
+
+                if self._indexes_in_board(col_index, row_index) is False:
+                    break
+
+                # Append move to set
+                moves.add(f"{cols[col_index]}{rows[row_index]}")
+
+            if limit >= 8:
+                raise Exception("Chess board was iterated out of bounds")
         return moves
