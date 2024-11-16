@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
-cols = ["A", "B", "C", "D", "E", "F", "G", "H"]
-rows = [1, 2, 3, 4, 5, 6, 7, 8]
-
 
 class Figure(ABC):
+    _cols = ["A", "B", "C", "D", "E", "F", "G", "H"]
+    _rows = [1, 2, 3, 4, 5, 6, 7, 8]
+
     def __init__(self, current_field: str):
         self.current_field: str = current_field
         self.col: str = self.current_field[0]
@@ -49,8 +49,8 @@ class Knight(Figure):
         for turn in range(4):
             for direction in range(2):
                 # Make a two tile jump in certain direction
-                col_index = cols.index(self.col) + jump_col[turn]
-                row_index = rows.index(self.row) + jump_row[turn]
+                col_index = self._cols.index(self.col) + jump_col[turn]
+                row_index = self._rows.index(self.row) + jump_row[turn]
 
                 # Make a one tile jump left or right
                 if jump_col[turn] == 0:
@@ -63,7 +63,7 @@ class Knight(Figure):
                     continue
 
                 # Append move to set
-                moves.add(f"{cols[col_index]}{rows[row_index]}")
+                moves.add(f"{self._cols[col_index]}{self._rows[row_index]}")
         return moves
 
 
@@ -74,8 +74,8 @@ class Bishop(Figure):
         jump_row = [1, -1, 1, -1]
 
         for turn in range(4):
-            col_index = cols.index(self.col)
-            row_index = rows.index(self.row)
+            col_index = self._cols.index(self.col)
+            row_index = self._rows.index(self.row)
             limit = 0
             while limit < 9:
                 # Move a step
@@ -86,7 +86,8 @@ class Bishop(Figure):
                     break
 
                 # Append move to set
-                moves.add(f"{cols[col_index]}{rows[row_index]}")
+                moves.add(f"{self._cols[col_index]}{self._rows[row_index]}")
+                limit += 1
 
             if limit >= 8:
                 raise Exception("Chess board was iterated out of bounds")
