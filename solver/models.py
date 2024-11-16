@@ -56,6 +56,27 @@ class Figure(ABC):
                 raise Exception("Chess board was iterated out of bounds")
         return moves
 
+    def _list_close_moves(self, jump_col: list, jump_row: list) -> set:
+        moves = set()
+
+        if len(jump_col) != len(jump_row):
+            raise Exception("Provided array lenghts are not equal.")
+
+        for turn in range(len(jump_col)):
+            col_index: int = self._cols.index(self.col)
+            row_index: int = self._rows.index(self.row)
+
+            # Move a step
+            col_index += jump_col[turn]
+            row_index += jump_row[turn]
+
+            if self._indexes_in_board(col_index, row_index) is False:
+                continue
+
+            # Append move to set
+            moves.add(f"{self._cols[col_index]}{self._rows[row_index]}")
+        return moves
+
 
 class Pawn(Figure):
     def list_available_moves(self) -> list:
@@ -67,30 +88,9 @@ class Pawn(Figure):
 
 class Knight(Figure):
     def list_available_moves(self) -> set:
-        moves = set()
-        jump_col = [2, -2, 0, 0]
-        jump_row = [0, 0, 2, -2]
-        jump_dir = [1, -1]
-
-        for turn in range(4):
-            for direction in range(2):
-                # Make a two tile jump in certain direction
-                col_index = self._cols.index(self.col) + jump_col[turn]
-                row_index = self._rows.index(self.row) + jump_row[turn]
-
-                # Make a one tile jump left or right
-                if jump_col[turn] == 0:
-                    col_index += jump_dir[direction]
-                else:
-                    row_index += jump_dir[direction]
-
-                # Check if after a move a figure is in the board
-                if self._indexes_in_board(col_index, row_index) is False:
-                    continue
-
-                # Append move to set
-                moves.add(f"{self._cols[col_index]}{self._rows[row_index]}")
-        return moves
+        jump_col = [2, -2, 2, -2, 1, 1, -1, -1]
+        jump_row = [1, 1, -1, -1, 2, -2, 2, -2]
+        return self._list_close_moves(jump_col, jump_row)
 
 
 class Bishop(Figure):
@@ -112,3 +112,10 @@ class Queen(Figure):
         jump_col = [1, 1, -1, -1, 1, -1, 0, 0]
         jump_row = [1, -1, 1, -1, 0, 0, 1, -1]
         return self._list_straight_moves(jump_col, jump_row)
+
+
+class King(Figure):
+    def list_available_moves(self) -> set:
+        jump_col = [1, 1, -1, -1, 1, -1, 0, 0]
+        jump_row = [1, -1, 1, -1, 0, 0, 1, -1]
+        return self._list_close_moves(jump_col, jump_row)

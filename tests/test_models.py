@@ -1,4 +1,4 @@
-from solver.models import Figure, Pawn, Knight, Bishop, Rook, Queen
+from solver.models import Figure, Pawn, Knight, Bishop, Rook, Queen, King
 
 
 def test_initialization():
@@ -80,3 +80,13 @@ def test_queen_list_available_moves():
         }
     # fmt: on
     assert queen.list_available_moves() == expected_moves
+
+
+def test_king_list_available_moves():
+    king = King("F7")
+    expected_moves = {"F8", "G8", "G7", "G6", "F6", "E6", "E7", "E8"}
+    assert king.list_available_moves() == expected_moves
+
+    king = King("H2")
+    expected_moves = {"H1", "G1", "G2", "G3", "H3"}
+    assert king.list_available_moves() == expected_moves
