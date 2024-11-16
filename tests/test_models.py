@@ -1,4 +1,4 @@
-from solver.models import Figure, Pawn, Knight, Bishop
+from solver.models import Figure, Pawn, Knight, Bishop, Rook, Queen
 
 
 def test_initialization():
@@ -57,3 +57,26 @@ def test_col_rows_are_in_the_board():
     assert Figure._indexes_in_board(7, 7) is True
     assert Figure._indexes_in_board(8, 8) is False
     assert Figure._indexes_in_board(-1, -1) is False
+
+
+def test_rook_list_available_moves():
+    rook = Rook("E3")
+    # fmt: off
+    expected_moves = {
+        "E1", "E2", "E4", "E5", "E6", "E7", "E8",
+        "A3", "B3", "C3", "D3", "F3", "G3", "H3"
+        }
+    # fmt: on
+    assert rook.list_available_moves() == expected_moves
+
+
+def test_queen_list_available_moves():
+    queen = Queen("C5")
+    # fmt: off
+    expected_moves = {
+        "C1", "C2", "C3", "C4", "C6", "C7", "C8", "A5", "B5",
+        "D5", "E5", "F5", "G5", "H5", "D6", "E7", "F8", "B6",
+        "A7", "D4", "E3", "F2", "G1", "B4", "A3"
+        }
+    # fmt: on
+    assert queen.list_available_moves() == expected_moves

@@ -22,13 +22,39 @@ class Figure(ABC):
             return False
 
     @staticmethod
-    def _indexes_in_board(col_index, row_index):
+    def _indexes_in_board(col_index: int, row_index: int) -> bool:
         if col_index >= 8 or col_index < 0:
             return False
         elif row_index >= 8 or row_index < 0:
             return False
         else:
             return True
+
+    def _list_straight_moves(self, jump_col: list, jump_row: list) -> set:
+        moves = set()
+
+        if len(jump_col) != len(jump_row):
+            raise Exception("Provided array lenghts are not equal.")
+
+        for turn in range(len(jump_col)):
+            col_index: int = self._cols.index(self.col)
+            row_index: int = self._rows.index(self.row)
+            limit = 0
+            while limit < 9:
+                # Move a step
+                col_index += jump_col[turn]
+                row_index += jump_row[turn]
+
+                if self._indexes_in_board(col_index, row_index) is False:
+                    break
+
+                # Append move to set
+                moves.add(f"{self._cols[col_index]}{self._rows[row_index]}")
+                limit += 1
+
+            if limit >= 8:
+                raise Exception("Chess board was iterated out of bounds")
+        return moves
 
 
 class Pawn(Figure):
@@ -69,26 +95,20 @@ class Knight(Figure):
 
 class Bishop(Figure):
     def list_available_moves(self) -> set:
-        moves = set()
         jump_col = [1, 1, -1, -1]
         jump_row = [1, -1, 1, -1]
+        return self._list_straight_moves(jump_col, jump_row)
 
-        for turn in range(4):
-            col_index = self._cols.index(self.col)
-            row_index = self._rows.index(self.row)
-            limit = 0
-            while limit < 9:
-                # Move a step
-                col_index += jump_col[turn]
-                row_index += jump_row[turn]
 
-                if self._indexes_in_board(col_index, row_index) is False:
-                    break
+class Rook(Figure):
+    def list_available_moves(self) -> set:
+        jump_col = [1, -1, 0, 0]
+        jump_row = [0, 0, 1, -1]
+        return self._list_straight_moves(jump_col, jump_row)
 
-                # Append move to set
-                moves.add(f"{self._cols[col_index]}{self._rows[row_index]}")
-                limit += 1
 
-            if limit >= 8:
-                raise Exception("Chess board was iterated out of bounds")
-        return moves
+class Queen(Figure):
+    def list_available_moves(self) -> set:
+        jump_col = [1, 1, -1, -1, 1, -1, 0, 0]
+        jump_row = [1, -1, 1, -1, 0, 0, 1, -1]
+        return self._list_straight_moves(jump_col, jump_row)
