@@ -10,10 +10,10 @@ def test_initialization():
 
 def test_pawn_list_available_moves():
     pawn = Pawn("A2")
-    assert pawn.list_available_moves() == ["A3"]
+    assert pawn.list_available_moves() == {"A3"}
 
     pawn = Pawn("A8")
-    assert pawn.list_available_moves() == []
+    assert pawn.list_available_moves() == {}
 
 
 def test_pawn_validate_move():

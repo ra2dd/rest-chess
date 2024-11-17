@@ -11,11 +11,11 @@ class Figure(ABC):
         self.row: int = int(self.current_field[1])
 
     @abstractmethod
-    def list_available_moves(self) -> list | set:
+    def list_available_moves(self) -> set:
         pass
 
     def validate_move(self, dest_field: str) -> bool:
-        avaliable_moves: list | set = self.list_available_moves()
+        avaliable_moves: set = self.list_available_moves()
         if dest_field in avaliable_moves:
             return True
         else:
@@ -79,11 +79,11 @@ class Figure(ABC):
 
 
 class Pawn(Figure):
-    def list_available_moves(self) -> list:
+    def list_available_moves(self) -> set:
         if self.row == 8:
-            return []
+            return {}
         else:
-            return [f"{self.col}{self.row+1}"]
+            return {f"{self.col}{self.row+1}"}
 
 
 class Knight(Figure):
