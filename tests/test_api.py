@@ -12,6 +12,33 @@ def test_get_moves():
         "figure": "knight",
         "currentField": "D4",
     }
-
     assert response.status_code == 200
+    assert expected_content == content
+
+
+def test_get_moves_invalid_field():
+    client = app.test_client()
+    response = client.get("/api/v1/knight/d11")
+    content = response.get_json()
+    expected_content = {
+        "availableMoves": [],
+        "error": "Field does not exist.",
+        "figure": "knight",
+        "currentField": "D11",
+    }
+    assert response.status_code == 409
+    assert expected_content == content
+
+
+def test_get_moves_invalid_figure():
+    client = app.test_client()
+    response = client.get("/api/v1/tower/d4")
+    content = response.get_json()
+    expected_content = {
+        "availableMoves": [],
+        "error": "Figure does not exist.",
+        "figure": "tower",
+        "currentField": "D4",
+    }
+    assert response.status_code == 404
     assert expected_content == content

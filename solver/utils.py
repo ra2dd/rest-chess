@@ -1,3 +1,4 @@
+from flask import jsonify
 from solver.models import Figure, Pawn, Knight, Bishop, Rook, Queen, King
 from typing import Union
 
@@ -33,3 +34,14 @@ def get_figure_object(figure: str, field: str) -> Union[Figure, bool]:
         return King(field)
     else:
         return False
+
+
+def create_moves_res(figure, field, error=None, moves=[]):
+    return jsonify(
+        {
+            "availableMoves": list(moves),
+            "error": error,
+            "figure": figure.lower(),
+            "currentField": field,
+        }
+    )
