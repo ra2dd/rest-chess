@@ -45,3 +45,15 @@ def create_moves_res(figure, field, error=None, moves=[]):
             "currentField": field,
         }
     )
+
+
+def create_validate_res(is_valid, figure, field, dest, error=None):
+    return jsonify(
+        {
+            "move": is_valid,
+            "figure": figure,
+            "error": error,
+            "currentField": field,
+            "destField": dest,
+        }
+    )
