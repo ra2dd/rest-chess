@@ -1,3 +1,4 @@
+import pytest
 from solver.models import Figure, Pawn, Knight, Bishop, Rook, Queen, King
 
 
@@ -22,17 +23,16 @@ def test_pawn_validate_move():
     assert pawn.validate_move("B5") is False
 
 
-def test_knight_list_available_moves():
-    knight = Knight("D4")
-    expected_moves = {"C6", "E6", "F3", "F5", "C2", "E2", "B3", "B5"}
-    assert knight.list_available_moves() == expected_moves
-
-    knight = Knight("A8")
-    expected_moves = {"B6", "C7"}
-    assert knight.list_available_moves() == expected_moves
-
-    knight = Knight("H1")
-    expected_moves = {"F2", "G3"}
+@pytest.mark.parametrize(
+    ("field", "expected_moves"),
+    (
+        ("D4", {"C6", "E6", "F3", "F5", "C2", "E2", "B3", "B5"}),
+        ("A8", {"B6", "C7"}),
+        ("H1", {"F2", "G3"}),
+    ),
+)
+def test_knight_list_available_moves(field, expected_moves):
+    knight = Knight(field)
     assert knight.list_available_moves() == expected_moves
 
 
@@ -52,11 +52,17 @@ def test_bishop_list_available_moves():
     assert bishop.list_available_moves() == expected_moves
 
 
-def test_col_rows_are_in_the_board():
-    assert Figure._indexes_in_board(0, 0) is True
-    assert Figure._indexes_in_board(7, 7) is True
-    assert Figure._indexes_in_board(8, 8) is False
-    assert Figure._indexes_in_board(-1, -1) is False
+@pytest.mark.parametrize(
+    ("col", "row", "boolean"),
+    (
+        (0, 0, True),
+        (7, 7, True),
+        (8, 8, False),
+        (-1, -1, False),
+    ),
+)
+def test_col_rows_are_in_the_board(col: int, row: int, boolean: bool):
+    assert Figure._indexes_in_board(col, row) is boolean
 
 
 def test_rook_list_available_moves():

@@ -6,7 +6,7 @@ class Figure(ABC):
     _rows = [1, 2, 3, 4, 5, 6, 7, 8]
 
     def __init__(self, current_field: str):
-        self.current_field: str = current_field
+        self.current_field = current_field
         self.col: str = self.current_field[0]
         self.row: int = int(self.current_field[1])
 
