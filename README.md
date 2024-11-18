@@ -34,6 +34,6 @@ pre-commit install
 ## Przykładowe zapytania
 
 ```
-curl http://localhost:5000/api/v1/knight/e4
-curl http://localhost:5000/api/v1/knight/e4/d6
+curl http://localhost:8000/api/v1/knight/e4
+curl http://localhost:8000/api/v1/knight/e4/d6
 ```
