@@ -1,6 +1,6 @@
 import pytest
 from solver.app import app
-from solver.utils import validate_field
+from solver.move_endpoints_helpers import validate_field
 
 
 def test_get_moves():

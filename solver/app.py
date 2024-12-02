@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
-from solver.utils import (
+from solver.move_endpoints_helpers import (
     validate_field,
+    validate_figure,
     get_figure_object,
     create_moves_res,
     create_validate_res,
@@ -20,14 +21,15 @@ def handle_500_error(e):
 @app.route("/api/v1/<figure>/<field>", methods=["GET"])
 def get_moves(figure: str, field: str):
     field = field.upper()
-    if validate_field(field) is False:
+    figure = str(figure).lower()
+
+    if not validate_field(field):
         return create_moves_res(figure, field, error="Field does not exist."), 409
 
-    object = get_figure_object(figure, field)
-    if object is False:
+    if not validate_figure(figure):
         return create_moves_res(figure, field, error="Figure does not exist."), 404
 
-    moves = object.list_available_moves()
+    moves = get_figure_object(figure, field).list_available_moves()
     return create_moves_res(figure, field, moves=moves), 200
 
 
@@ -35,20 +37,21 @@ def get_moves(figure: str, field: str):
 def valid_move(figure: str, field: str, dest: str):
     field = field.upper()
     dest = dest.upper()
-    if validate_field(field) is False:
+    figure = str(figure).lower()
+
+    if not validate_field(field):
         error = "Current field does not exist."
         return create_validate_res(None, figure, field, dest, error=error), 409
 
-    if validate_field(dest) is False:
+    if not validate_field(dest):
         error = "Destination field does not exist."
         return create_validate_res(None, figure, field, dest, error=error), 409
 
-    object = get_figure_object(figure, field)
-    if object is False:
+    if not validate_figure(figure):
         error = "Figure does not exist."
         return create_validate_res(None, figure, field, dest, error=error), 404
 
-    if object.validate_move(dest) is True:
+    if get_figure_object(figure, field).validate_move(dest):
         return create_validate_res("valid", figure, field, dest), 200
     else:
         error = "Current move is not permitted."

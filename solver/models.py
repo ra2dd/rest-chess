@@ -1,9 +1,20 @@
 from abc import ABC, abstractmethod
+import logging
+from solver.figure_exceptions import (
+    ArrayLengthsNotEqualError,
+)
+
+logger = logging.getLogger(__name__)
 
 
 class Figure(ABC):
-    _cols = ["A", "B", "C", "D", "E", "F", "G", "H"]
-    _rows = [1, 2, 3, 4, 5, 6, 7, 8]
+    __cols = ["A", "B", "C", "D", "E", "F", "G", "H"]
+    __rows = [1, 2, 3, 4, 5, 6, 7, 8]
+
+    # Minimum and maximum size of the chess board
+    __min_index = 0
+    __max_index = 7
+    _max_moves = __max_index + 1
 
     def __init__(self, current_field: str):
         self.current_field = current_field
@@ -21,11 +32,10 @@ class Figure(ABC):
         else:
             return False
 
-    @staticmethod
-    def _indexes_in_board(col_index: int, row_index: int) -> bool:
-        if col_index >= 8 or col_index < 0:
+    def __indexes_in_board(self, col_index: int, row_index: int) -> bool:
+        if col_index > self.__max_index or col_index < self.__min_index:
             return False
-        elif row_index >= 8 or row_index < 0:
+        elif row_index > self.__max_index or row_index < self.__min_index:
             return False
         else:
             return True
@@ -33,55 +43,57 @@ class Figure(ABC):
     def _list_straight_moves(self, jump_col: list, jump_row: list) -> set:
         moves = set()
 
-        if len(jump_col) != len(jump_row):
-            raise Exception("Provided array lenghts are not equal.")
+        self.__check_array_lengths_equal(len(jump_col), len(jump_row))
 
         for turn in range(len(jump_col)):
-            col_index: int = self._cols.index(self.col)
-            row_index: int = self._rows.index(self.row)
-            limit = 0
-            while limit < 9:
+            col_index: int = self.__cols.index(self.col)
+            row_index: int = self.__rows.index(self.row)
+
+            for _ in range(self._max_moves):
                 # Move a step
                 col_index += jump_col[turn]
                 row_index += jump_row[turn]
 
-                if self._indexes_in_board(col_index, row_index) is False:
+                if not self.__indexes_in_board(col_index, row_index):
                     break
 
                 # Append move to set
-                moves.add(f"{self._cols[col_index]}{self._rows[row_index]}")
-                limit += 1
-
-            if limit >= 8:
-                raise Exception("Chess board was iterated out of bounds")
+                moves.add(f"{self.__cols[col_index]}{self.__rows[row_index]}")
         return moves
 
     def _list_close_moves(self, jump_col: list, jump_row: list) -> set:
         moves = set()
 
-        if len(jump_col) != len(jump_row):
-            raise Exception("Provided array lenghts are not equal.")
+        self.__check_array_lengths_equal(len(jump_col), len(jump_row))
 
         for turn in range(len(jump_col)):
-            col_index: int = self._cols.index(self.col)
-            row_index: int = self._rows.index(self.row)
+            col_index: int = self.__cols.index(self.col)
+            row_index: int = self.__rows.index(self.row)
 
             # Move a step
             col_index += jump_col[turn]
             row_index += jump_row[turn]
 
-            if self._indexes_in_board(col_index, row_index) is False:
+            if not self.__indexes_in_board(col_index, row_index):
                 continue
 
             # Append move to set
-            moves.add(f"{self._cols[col_index]}{self._rows[row_index]}")
+            moves.add(f"{self.__cols[col_index]}{self.__rows[row_index]}")
         return moves
+
+    def __check_array_lengths_equal(self, col_len, row_len):
+        if col_len != row_len:
+            logger.error(
+                f"Array lengths are not equal. Column: {col_len} != Row: {row_len}"
+            )
+            raise ArrayLengthsNotEqualError("Provided array lenghts are not equal.")
 
 
 class Pawn(Figure):
     def list_available_moves(self) -> set:
-        if self.row == 8:
-            return {}
+        print(self._max_moves)
+        if self.row == self._max_moves:
+            return set()
         else:
             return {f"{self.col}{self.row+1}"}
 
